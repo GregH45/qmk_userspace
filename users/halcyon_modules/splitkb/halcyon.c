@@ -91,6 +91,14 @@ void keyboard_post_init_kb(void) {
     keyboard_post_init_user();
 }
 
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    if (record->event.pressed) {
+        bongo_frame = (bongo_frame == 1) ? 2 : 1; // alternate paws
+        last_bongo_tap = timer_read32();
+    }
+    return true; // don’t forget this, otherwise keystrokes won’t work
+}
+
 void housekeeping_task_kb(void) {
     if (is_keyboard_master()) {
         static bool synced = false;
