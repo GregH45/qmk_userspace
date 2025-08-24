@@ -5,6 +5,10 @@
 
 #include "qp.h"
 #include "qp_surface.h"
+#include "bongo.h"
+
+static uint8_t bongo_frame = 0;
+static uint32_t last_bongo_tap = 0;
 
 // All values (including hue) are scaled to 0-255
 #define HSV_SPLITKB 145, 235, 155
@@ -29,6 +33,23 @@
 extern painter_device_t lcd;
 extern painter_device_t lcd_surface;
 
+void render_bongo(void) {
+    if (timer_elapsed32(last_bongo_tap) > 200) {
+        bongo_frame = 0; // idle after inactivity
+    }
+
+    switch (bongo_frame) {
+        case 1:
+            qp_drawimage(lcd_surface, 20, 40, qp_load_image_mem(bongo_left));
+            break;
+        case 2:
+            qp_drawimage(lcd_surface, 20, 40, qp_load_image_mem(bongo_right));
+            break;
+        default:
+            qp_drawimage(lcd_surface, 20, 40, qp_load_image_mem(bongo_idle));
+            break;
+    }
+}
 void draw_grid(void);
 void update_grid(void);
 void init_grid(void);
