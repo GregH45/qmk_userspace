@@ -287,26 +287,9 @@ bool display_module_housekeeping_task_kb(bool second_display) {
 
     if(second_display) {
         static uint32_t last_draw = 0;
-        static bool second_display_set = false;
-        static uint32_t previous_matrix_activity_time = 0;
 
-        if(!second_display_set) {
-            srand(get_random_32bit());
-            init_grid();
-            color_value = rand() % 8;
-            second_display_set = true;
-        }
-
-        if (timer_elapsed32(last_draw) >= 100) { // Throttle to 10 fps
-            draw_grid();
-            update_grid();
-
-            if (previous_matrix_activity_time != last_matrix_activity_time()) {
-                color_value = rand() % 8;
-                add_cell_cluster();
-                previous_matrix_activity_time = last_matrix_activity_time();
-            }
-
+        if (timer_elapsed32(last_draw) >= 50) { // 20 fps
+            render_bongo();
             last_draw = timer_read32();
         }
     }
